@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  flask:
+    build: flask/
+    image: pyimgfilter_server
+    container_name: pyimgfilter_server
+    volumes:
+      - ./flask/code:/code
+    ports:
+      - "8000:8000"
+    restart: always
