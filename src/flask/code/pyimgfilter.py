@@ -2,8 +2,6 @@ import requests
 from PIL import Image
 from PIL import ImageFilter
 import sys
-from io import BytesIO
-from flask import send_file
 
 def help():
   print("Script Usage:")
@@ -49,10 +47,3 @@ def filter(url, radius, path="./"):
     print('Image Couldn\'t be retreived')
 
     return None
-
-def server_filter(url, radius, path="./"):
-    img = filter(url, radius, path)
-    io = BytesIO()
-    img.save(io, 'JPEG', quality=70)
-    io.seek(0)
-    return send_file(io, mimetype='image/jpeg')

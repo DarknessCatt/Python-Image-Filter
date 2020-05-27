@@ -1,5 +1,7 @@
-from flask import Flask, request, render_template
-from pyimgfilter import server_filter as pif
+from flask import Flask, request, send_file
+from pyimgfilter import filter as pif
+from io import BytesIO
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -12,7 +14,12 @@ def filter_image():
   radius = request.args.get('radius', default = 10, type = int)
 
   img = pif(url, radius)
-  return img
+
+  io = BytesIO()
+  img.save(io, 'JPEG', quality=70)
+  io.seek(0)
+
+  return send_file(io, mimetype='image/jpeg')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
