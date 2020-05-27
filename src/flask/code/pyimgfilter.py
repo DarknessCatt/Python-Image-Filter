@@ -1,23 +1,44 @@
 import requests
 from PIL import Image
 from PIL import ImageFilter
+import sys
 
-image_url = "https://cdn.pixabay.com/photo/2020/02/06/09/39/summer-4823612_960_720.jpg"
-filename = image_url.split("/")[-1]
+def help():
+  print("Script Usage:")
+  print("python3", sys.argv[0], "<URL> <radius> <path>")
+  print("<URL> = Image's URL")
+  print("<radius> = GaussianBlur's radius")
+  print("<path> = Image's save path (default: \'./\' ")
+  sys.exit(2)
 
-r = requests.get(image_url, stream = True)
+def main():
 
-if r.status_code == 200:
-  print('Image sucessfully retreived: ',filename)
+  if len(sys.argv) < 3:
+    help()
 
-  r.raw.decode_content = True
-  im = Image.open(r.raw)
+  image_url = sys.argv[1]
+  blur_radius = int(sys.argv[2])
+  path = "./"
 
-  filtered_img = im.filter(ImageFilter.GaussianBlur(radius=20))
+  if sys.argv[3] is not None:
+    path = sys.argv[3]
 
-  filtered_img.show()
-  
-  filtered_img.save(filename)
-        
-else:
-  print('Image Couldn\'t be retreived')
+  filename = image_url.split("/")[-1]
+  r = requests.get(image_url, stream = True)
+
+  if r.status_code == 200:
+    print('Image sucessfully retreived: ',filename)
+
+    r.raw.decode_content = True
+    im = Image.open(r.raw)
+
+    filtered_img = im.filter(ImageFilter.GaussianBlur(radius=10))
+
+    filtered_img.show()
+    
+    filtered_img.save(path+filename)
+          
+  else:
+    print('Image Couldn\'t be retreived')
+
+main()
