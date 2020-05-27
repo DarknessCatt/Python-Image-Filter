@@ -2,6 +2,8 @@ import requests
 from PIL import Image
 from PIL import ImageFilter
 import sys
+from io import BytesIO
+from flask import send_file
 
 def help():
   print("Script Usage:")
@@ -23,8 +25,15 @@ def main():
   if sys.argv[3] is not None:
     path = sys.argv[3]
 
-  filename = image_url.split("/")[-1]
-  r = requests.get(image_url, stream = True)
+  img = filter(image_url, blur_radius, path)
+
+  if img is not None:
+    img.show() 
+    img.save(path+filename)
+  
+def filter(url, radius, path="./"):
+  filename = url.split("/")[-1]
+  r = requests.get(url, stream = True)
 
   if r.status_code == 200:
     print('Image sucessfully retreived: ',filename)
@@ -32,13 +41,18 @@ def main():
     r.raw.decode_content = True
     im = Image.open(r.raw)
 
-    filtered_img = im.filter(ImageFilter.GaussianBlur(radius=10))
+    filtered_img = im.filter(ImageFilter.GaussianBlur(radius))
 
-    filtered_img.show()
-    
-    filtered_img.save(path+filename)
+    return filtered_img
           
   else:
     print('Image Couldn\'t be retreived')
 
-main()
+    return None
+
+def server_filter(url, radius, path="./"):
+    img = filter(url, radius, path)
+    io = BytesIO()
+    img.save(io, 'JPEG', quality=70)
+    io.seek(0)
+    return send_file(io, mimetype='image/jpeg')

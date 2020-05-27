@@ -5,8 +5,9 @@ services:
     build: flask/
     image: pyimgfilter_server
     container_name: pyimgfilter_server
+    command: flask run --host=0.0.0.0
     volumes:
       - ./flask/code:/code
     ports:
-      - "8000:8000"
+      - "5000:5000"
     restart: always
