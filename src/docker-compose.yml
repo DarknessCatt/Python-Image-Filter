@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  flask:
+    build: flask/
+    image: pyimgfilter_server
+    container_name: pyimgfilter_server
+    command: flask run --host=0.0.0.0
+    volumes:
+      - ./flask/code:/code
+    ports:
+      - "5000:5000"
+    restart: always
+
+  react:
+    build: react/
+    image: pyimgfilter_react
+    container_name: pyimgfilter_react
+    command: npm start
+    volumes:
+      - './react/app:/app'
+      - './react/app/node_modules'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flask
+    restart: always
+    stdin_open: true
