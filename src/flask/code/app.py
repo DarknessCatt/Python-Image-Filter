@@ -16,10 +16,19 @@ def filter_image():
   img = pif(url, radius)
 
   io = BytesIO()
-  img.save(io, 'JPEG', quality=70)
+
+  mime = ''
+
+  if img.mode in ('RGBA', 'LA'):
+  	img.save(io, 'PNG', quality=70)
+  	mime = 'image/png'
+  else:
+  	img.save(io, 'JPEG', quality=70)
+  	mime = 'image/jpeg'
+
   io.seek(0)
 
-  return send_file(io, mimetype='image/jpeg')
+  return send_file(io, mimetype=mime)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
