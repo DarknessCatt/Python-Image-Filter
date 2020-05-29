@@ -18,8 +18,8 @@ services:
     container_name: pyimgfilter_react
     command: npm start
     volumes:
-      - './react/app:/app'
-      - './react/app/node_modules'
+      - './react/app/src:/app/src'
+      - './react/app/public:/app/public'
     ports:
       - "3000:3000"
     depends_on:
